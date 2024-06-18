@@ -1,0 +1,33 @@
+# CHTC_SUBMIT_FILE
+#2022-11-29 exonerate gene prediction for cynomolgus macaque MHC
+
+# use standard universe
+universe = vanilla
+
+# logs
+Error   = logs/$(Cluster).$(Process).err.txt
+Output  = logs/$(Cluster).$(Process).out.txt
+Log = logs/$(Cluster).$(Process).log.txt
+
+# machine specs
+request_cpus = 1
+request_memory = 8GB
+request_disk = 100GB
+
+# requirements 
++AccountingGroup = "Pathology_OConnor"
+
+# arguments
+Arguments = $(ASSEMBLY) $(ANIMAL_ID)
+
+# shell script to run
+executable = exonerate.sh
+
+# file transfer options
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = process-gff.sh,21295-exonerate_gff_to_alignment_gff3.pl,ipd-mhc-mafa-2022-09-19_cleaned.fasta,cy0333_M3_MHC_v2_hybrid_assembly_annotations.fasta,hg38_genes_CDS.fasta,Shiina_Mamu_CDS.fasta,$(ASSEMBLY)
+
+# queue_file
+queue ASSEMBLY,ANIMAL_ID from assemblies.txt
+# END file transfer options

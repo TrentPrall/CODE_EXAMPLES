@@ -1,0 +1,30 @@
+# START universe
+universe = docker
+docker_image = dockerreg.chtc.wisc.edu/prall/hifiasm:29364
+
+
+# logging
+log = logs/job_$(Cluster)_$(Process).log
+output = logs/job_$(Cluster)_$(Process).out
+error = logs/job_$(Cluster)_$(Process).err
+
+# priority for OC users
++AccountingGroup = "Pathology_OConnor"
+
+# execute node specs
+request_cpus = 8
+request_memory = 32GB
+request_disk = 100GB
+
+# shell script
+executable = hifiasm.sh
+
+# ONT
+arguments = $(ONT_FASTQ) $(HIFI_FASTQ) $(OUTPUT_FOLDER)
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(ONT_FASTQ),$(HIFI_FASTQ)
+
+#queue
+queue ONT_FASTQ,HIFI_FASTQ,OUTPUT_FOLDER from hifiasm_list.txt

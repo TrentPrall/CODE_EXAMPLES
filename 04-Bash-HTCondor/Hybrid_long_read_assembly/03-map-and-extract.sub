@@ -1,0 +1,41 @@
+# use docker universe
+universe = docker
+docker_image = dockerreg.chtc.wisc.edu/prall/map-and-extract:v1
+
+
+# logging
+log = logs/job_$(Cluster)_$(Process).log
+output = logs/job_$(Cluster)_$(Process).out
+error = logs/job_$(Cluster)_$(Process).err
+
+# priority for OC users
+requirements = (OpSysMajorVer == 7) || (OpSysMajorVer == 8)
+requirements = (Target.HasCHTCStaging == true)
+accounting_group = Pathology_OConnor
+
+# execute node specs
+request_cpus = 2
+request_memory = 24GB
+request_disk = 100GB
+
+# shell script
+executable = map-and-extract.sh
+
+# path to reference genome to map against
+REF_GENOME = /staging/groups/oconnor_group/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set_MCM_MHC.fna.gz
+
+# ONT
+MINIMAP2_PRESET=map-ont
+
+arguments = $(FASTQ) $(OUTPUT_FOLDER) $(REF_GENOME) $(MINIMAP2_PRESET)
+
+# ont_list.txt gets made from make-multipart-queue.sh script
+queue FASTQ,OUTPUT_FOLDER from ont_list.txt
+
+# PacBio
+MINIMAP2_PRESET=map-hifi
+
+arguments = $(FASTQ) $(OUTPUT_FOLDER) $(REF_GENOME) $(MINIMAP2_PRESET)
+
+# pacbio_list.txt gets made from make-multipart-queue.sh script
+queue FASTQ,OUTPUT_FOLDER from pacbio_list.txt

@@ -1,0 +1,36 @@
+# use standard universe
+universe = vanilla
+
+# logging
+log = job_$(Cluster)_$(Process).log
+output = job_$(Cluster)_$(Process).out
+error = job_$(Cluster)_$(Process).err
+
+# priority for OC users
++AccountingGroup = "Pathology_OConnor"
+
+# execute node specs
+request_cpus = 8
+request_memory = 16GB
+request_disk = 200GB
+Requirements = (Target.HasCHTCStaging == true)
+
+executable = fastq-split.sh
+
+# ONT FASTQ processing # ### EDIT WITH ONT FILE AND OUTPUT DIRECTORY
+FASTQ=/staging/groups/oconnor_group/FLYE/STAGE/cy0333/cy0333.bonito.fastq.gz
+OUTPUT_FOLDER=/staging/groups/oconnor_group/FLYE/STAGE/cy0333/cy0333.bonito.split/
+NUMBER_READS_PER_SPLIT=100000
+
+arguments = $(FASTQ) $(OUTPUT_FOLDER) $(NUMBER_READS_PER_SPLIT)
+
+queue
+
+# PacBio FASTQ processing # ### EDIT WITH PACBIO FILE AND OUTPUT DIRECTORY
+FASTQ=/staging/groups/oconnor_group/FLYE/STAGE/cy0333/cy0333.pbhifi.fastq.gz
+OUTPUT_FOLDER=/staging/groups/oconnor_group/FLYE/STAGE/cy0333/cy0333.pacbio.split/
+NUMBER_READS_PER_SPLIT=100000
+
+arguments = $(FASTQ) $(OUTPUT_FOLDER) $(NUMBER_READS_PER_SPLIT)
+
+queue
